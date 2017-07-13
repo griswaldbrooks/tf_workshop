@@ -36,13 +36,13 @@ def main():
     print("Time to get data = {} seconds".format(time.time() - start_time))
     start_time = time.time()
 
+    # Initalize tf
     NUM_CLASSES = 10
     NUM_PIXELS = 28 * 28
     BATCH_SIZE = 100
     LEARNING_RATE = 0.5
     EPOCHS = 2000
 
-    # Initalize tf
     tf.reset_default_graph()
     sess = tf.InteractiveSession()
 
@@ -59,10 +59,11 @@ def main():
     y = tf.matmul(x_p, w) + b
 
     # Set up trainer.
-    cross_entropy = tf.reduce_mean(
-            tf.nn.softmax_cross_entropy_with_logits(labels=y_p, logits=y))
     optimizer = tf.train.GradientDescentOptimizer(LEARNING_RATE)
-    train_step = optimizer.minimize(cross_entropy)
+    cross_entropy = tf.nn.softmax_cross_entropy_with_logits(labels=y_p,
+                                                            logits=y)
+    cross_entropy_reduced = tf.reduce_mean(cross_entropy)
+    train_step = optimizer.minimize(cross_entropy_reduced)
 
     # Initialize.
     sess.run(tf.initialize_all_variables())
